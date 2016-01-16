@@ -1,2 +1,5 @@
 /.idea/
 /env/
+.coverage
+/.eggs/
+/attune.egg-info/

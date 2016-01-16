@@ -38,73 +38,29 @@ class BlacklistParams(object):
                                   and the value is json key in definition.
         """
         self.swagger_types = {
-            'entity_type': 'str',
-            'ids': 'list[str]',
             'active_from': 'datetime',
             'active_to': 'datetime',
+            'entity_type': 'str',
+            'ids': 'list[str]',
             'disabled': 'bool',
             'scope': 'list[ScopeEntry]'
         }
 
         self.attribute_map = {
-            'entity_type': 'entityType',
-            'ids': 'ids',
             'active_from': 'activeFrom',
             'active_to': 'activeTo',
+            'entity_type': 'entityType',
+            'ids': 'ids',
             'disabled': 'disabled',
             'scope': 'scope'
         }
 
-        self._entity_type = None
-        self._ids = None
         self._active_from = None
         self._active_to = None
+        self._entity_type = None
+        self._ids = None
         self._disabled = None
         self._scope = None
-
-    @property
-    def entity_type(self):
-        """
-        Gets the entity_type of this BlacklistParams.
-
-
-        :return: The entity_type of this BlacklistParams.
-        :rtype: str
-        """
-        return self._entity_type
-
-    @entity_type.setter
-    def entity_type(self, entity_type):
-        """
-        Sets the entity_type of this BlacklistParams.
-
-
-        :param entity_type: The entity_type of this BlacklistParams.
-        :type: str
-        """
-        self._entity_type = entity_type
-
-    @property
-    def ids(self):
-        """
-        Gets the ids of this BlacklistParams.
-
-
-        :return: The ids of this BlacklistParams.
-        :rtype: list[str]
-        """
-        return self._ids
-
-    @ids.setter
-    def ids(self, ids):
-        """
-        Sets the ids of this BlacklistParams.
-
-
-        :param ids: The ids of this BlacklistParams.
-        :type: list[str]
-        """
-        self._ids = ids
 
     @property
     def active_from(self):
@@ -149,6 +105,50 @@ class BlacklistParams(object):
         :type: datetime
         """
         self._active_to = active_to
+
+    @property
+    def entity_type(self):
+        """
+        Gets the entity_type of this BlacklistParams.
+
+
+        :return: The entity_type of this BlacklistParams.
+        :rtype: str
+        """
+        return self._entity_type
+
+    @entity_type.setter
+    def entity_type(self, entity_type):
+        """
+        Sets the entity_type of this BlacklistParams.
+
+
+        :param entity_type: The entity_type of this BlacklistParams.
+        :type: str
+        """
+        self._entity_type = entity_type
+
+    @property
+    def ids(self):
+        """
+        Gets the ids of this BlacklistParams.
+
+
+        :return: The ids of this BlacklistParams.
+        :rtype: list[str]
+        """
+        return self._ids
+
+    @ids.setter
+    def ids(self, ids):
+        """
+        Sets the ids of this BlacklistParams.
+
+
+        :param ids: The ids of this BlacklistParams.
+        :type: list[str]
+        """
+        self._ids = ids
 
     @property
     def disabled(self):

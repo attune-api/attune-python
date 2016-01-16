@@ -38,107 +38,41 @@ class RankingParams(object):
                                   and the value is json key in definition.
         """
         self.swagger_types = {
-            'customer': 'str',
-            'view': 'str',
-            'application': 'str',
             'quantities': 'list[Int]',
-            'ip': 'str',
+            'view': 'str',
             'entity_type': 'str',
             'ids': 'list[str]',
+            'ip': 'str',
+            'application': 'str',
+            'customer': 'str',
             'anonymous': 'str',
             'user_agent': 'str',
             'scope': 'list[ScopeEntry]'
         }
 
         self.attribute_map = {
-            'customer': 'customer',
-            'view': 'view',
-            'application': 'application',
             'quantities': 'quantities',
-            'ip': 'ip',
+            'view': 'view',
             'entity_type': 'entityType',
             'ids': 'ids',
+            'ip': 'ip',
+            'application': 'application',
+            'customer': 'customer',
             'anonymous': 'anonymous',
             'user_agent': 'userAgent',
             'scope': 'scope'
         }
 
-        self._customer = None
-        self._view = None
-        self._application = None
         self._quantities = None
-        self._ip = None
+        self._view = None
         self._entity_type = None
         self._ids = None
+        self._ip = None
+        self._application = None
+        self._customer = None
         self._anonymous = None
         self._user_agent = None
         self._scope = None
-
-    @property
-    def customer(self):
-        """
-        Gets the customer of this RankingParams.
-
-
-        :return: The customer of this RankingParams.
-        :rtype: str
-        """
-        return self._customer
-
-    @customer.setter
-    def customer(self, customer):
-        """
-        Sets the customer of this RankingParams.
-
-
-        :param customer: The customer of this RankingParams.
-        :type: str
-        """
-        self._customer = customer
-
-    @property
-    def view(self):
-        """
-        Gets the view of this RankingParams.
-
-
-        :return: The view of this RankingParams.
-        :rtype: str
-        """
-        return self._view
-
-    @view.setter
-    def view(self, view):
-        """
-        Sets the view of this RankingParams.
-
-
-        :param view: The view of this RankingParams.
-        :type: str
-        """
-        self._view = view
-
-    @property
-    def application(self):
-        """
-        Gets the application of this RankingParams.
-
-
-        :return: The application of this RankingParams.
-        :rtype: str
-        """
-        return self._application
-
-    @application.setter
-    def application(self, application):
-        """
-        Sets the application of this RankingParams.
-
-
-        :param application: The application of this RankingParams.
-        :type: str
-        """
-        self._application = application
 
     @property
     def quantities(self):
@@ -163,26 +97,26 @@ class RankingParams(object):
         self._quantities = quantities
 
     @property
-    def ip(self):
+    def view(self):
         """
-        Gets the ip of this RankingParams.
+        Gets the view of this RankingParams.
 
 
-        :return: The ip of this RankingParams.
+        :return: The view of this RankingParams.
         :rtype: str
         """
-        return self._ip
+        return self._view
 
-    @ip.setter
-    def ip(self, ip):
+    @view.setter
+    def view(self, view):
         """
-        Sets the ip of this RankingParams.
+        Sets the view of this RankingParams.
 
 
-        :param ip: The ip of this RankingParams.
+        :param view: The view of this RankingParams.
         :type: str
         """
-        self._ip = ip
+        self._view = view
 
     @property
     def entity_type(self):
@@ -227,6 +161,72 @@ class RankingParams(object):
         :type: list[str]
         """
         self._ids = ids
+
+    @property
+    def ip(self):
+        """
+        Gets the ip of this RankingParams.
+
+
+        :return: The ip of this RankingParams.
+        :rtype: str
+        """
+        return self._ip
+
+    @ip.setter
+    def ip(self, ip):
+        """
+        Sets the ip of this RankingParams.
+
+
+        :param ip: The ip of this RankingParams.
+        :type: str
+        """
+        self._ip = ip
+
+    @property
+    def application(self):
+        """
+        Gets the application of this RankingParams.
+
+
+        :return: The application of this RankingParams.
+        :rtype: str
+        """
+        return self._application
+
+    @application.setter
+    def application(self, application):
+        """
+        Sets the application of this RankingParams.
+
+
+        :param application: The application of this RankingParams.
+        :type: str
+        """
+        self._application = application
+
+    @property
+    def customer(self):
+        """
+        Gets the customer of this RankingParams.
+
+
+        :return: The customer of this RankingParams.
+        :rtype: str
+        """
+        return self._customer
+
+    @customer.setter
+    def customer(self, customer):
+        """
+        Sets the customer of this RankingParams.
+
+
+        :param customer: The customer of this RankingParams.
+        :type: str
+        """
+        self._customer = customer
 
     @property
     def anonymous(self):

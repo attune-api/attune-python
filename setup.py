@@ -11,5 +11,6 @@ setup(
         keywords=["Attune API"],
         install_requires=["urllib3 >= 1.10", "six >= 1.9", "certifi", "python-dateutil"],
         packages=['attune'],
+        test_suite='tests',
         # include_package_data=True
 )

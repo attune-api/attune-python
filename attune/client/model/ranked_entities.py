@@ -38,45 +38,23 @@ class RankedEntities(object):
                                   and the value is json key in definition.
         """
         self.swagger_types = {
-            'ranking': 'list[str]',
             'cell': 'str',
+            'ranking': 'list[str]',
             'status': 'int',
             'message': 'str'
         }
 
         self.attribute_map = {
-            'ranking': 'ranking',
             'cell': 'cell',
+            'ranking': 'ranking',
             'status': 'status',
             'message': 'message'
         }
 
-        self._ranking = None
         self._cell = None
+        self._ranking = None
         self._status = None
         self._message = None
-
-    @property
-    def ranking(self):
-        """
-        Gets the ranking of this RankedEntities.
-        List of ids in ranked order
-
-        :return: The ranking of this RankedEntities.
-        :rtype: list[str]
-        """
-        return self._ranking
-
-    @ranking.setter
-    def ranking(self, ranking):
-        """
-        Sets the ranking of this RankedEntities.
-        List of ids in ranked order
-
-        :param ranking: The ranking of this RankedEntities.
-        :type: list[str]
-        """
-        self._ranking = ranking
 
     @property
     def cell(self):
@@ -99,6 +77,28 @@ class RankedEntities(object):
         :type: str
         """
         self._cell = cell
+
+    @property
+    def ranking(self):
+        """
+        Gets the ranking of this RankedEntities.
+        List of ids in ranked order
+
+        :return: The ranking of this RankedEntities.
+        :rtype: list[str]
+        """
+        return self._ranking
+
+    @ranking.setter
+    def ranking(self, ranking):
+        """
+        Sets the ranking of this RankedEntities.
+        List of ids in ranked order
+
+        :param ranking: The ranking of this RankedEntities.
+        :type: list[str]
+        """
+        self._ranking = ranking
 
     @property
     def status(self):

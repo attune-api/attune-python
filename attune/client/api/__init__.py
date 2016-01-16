@@ -1,2 +1,2 @@
 
-from attune.client.api.attune_api import AttuneApi
+from attune.client.api.entities import Entities

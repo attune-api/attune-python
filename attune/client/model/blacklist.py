@@ -39,12 +39,12 @@ class Blacklist(object):
         """
         self.swagger_types = {
             'ids': 'list[str]',
-            'updated_date': 'datetime',
-            'created_date': 'datetime',
             'consumer': 'str',
             'entity_type': 'str',
             'start_date': 'datetime',
             'end_date': 'datetime',
+            'created_date': 'datetime',
+            'updated_date': 'datetime',
             'scope': 'str',
             'disabled': 'bool',
             'id': 'str'
@@ -52,24 +52,24 @@ class Blacklist(object):
 
         self.attribute_map = {
             'ids': 'ids',
-            'updated_date': 'updatedDate',
-            'created_date': 'createdDate',
             'consumer': 'consumer',
             'entity_type': 'entityType',
             'start_date': 'startDate',
             'end_date': 'endDate',
+            'created_date': 'createdDate',
+            'updated_date': 'updatedDate',
             'scope': 'scope',
             'disabled': 'disabled',
             'id': 'id'
         }
 
         self._ids = None
-        self._updated_date = None
-        self._created_date = None
         self._consumer = None
         self._entity_type = None
         self._start_date = None
         self._end_date = None
+        self._created_date = None
+        self._updated_date = None
         self._scope = None
         self._disabled = None
         self._id = None
@@ -95,50 +95,6 @@ class Blacklist(object):
         :type: list[str]
         """
         self._ids = ids
-
-    @property
-    def updated_date(self):
-        """
-        Gets the updated_date of this Blacklist.
-
-
-        :return: The updated_date of this Blacklist.
-        :rtype: datetime
-        """
-        return self._updated_date
-
-    @updated_date.setter
-    def updated_date(self, updated_date):
-        """
-        Sets the updated_date of this Blacklist.
-
-
-        :param updated_date: The updated_date of this Blacklist.
-        :type: datetime
-        """
-        self._updated_date = updated_date
-
-    @property
-    def created_date(self):
-        """
-        Gets the created_date of this Blacklist.
-
-
-        :return: The created_date of this Blacklist.
-        :rtype: datetime
-        """
-        return self._created_date
-
-    @created_date.setter
-    def created_date(self, created_date):
-        """
-        Sets the created_date of this Blacklist.
-
-
-        :param created_date: The created_date of this Blacklist.
-        :type: datetime
-        """
-        self._created_date = created_date
 
     @property
     def consumer(self):
@@ -227,6 +183,50 @@ class Blacklist(object):
         :type: datetime
         """
         self._end_date = end_date
+
+    @property
+    def created_date(self):
+        """
+        Gets the created_date of this Blacklist.
+
+
+        :return: The created_date of this Blacklist.
+        :rtype: datetime
+        """
+        return self._created_date
+
+    @created_date.setter
+    def created_date(self, created_date):
+        """
+        Sets the created_date of this Blacklist.
+
+
+        :param created_date: The created_date of this Blacklist.
+        :type: datetime
+        """
+        self._created_date = created_date
+
+    @property
+    def updated_date(self):
+        """
+        Gets the updated_date of this Blacklist.
+
+
+        :return: The updated_date of this Blacklist.
+        :rtype: datetime
+        """
+        return self._updated_date
+
+    @updated_date.setter
+    def updated_date(self, updated_date):
+        """
+        Sets the updated_date of this Blacklist.
+
+
+        :param updated_date: The updated_date of this Blacklist.
+        :type: datetime
+        """
+        self._updated_date = updated_date
 
     @property
     def scope(self):

@@ -73,6 +73,7 @@ def build(*args):
     CMD_PARAMS = {
         'jar': jar,
         'host': ATTUNE_API_URL,
+        # 'tpldir': 'swagger-templates/',
     }
 
     cl.secho('Creating swagger project temp directory', fg='green')
@@ -97,7 +98,7 @@ def build(*args):
                 'label': 'api',
                 'src': list(x for x in glob('%s/swagger_client/apis/*.py' % tmpdir) if not x.endswith('__init__.py')),
                 'dst': os.path.join('attune', 'client', 'api'),
-                'rewrite': {'fix_this_api.py': 'attune_api.py'}
+                'rewrite': {'fix_this_api.py': 'entities.py'}
             }
         )
         process_files = []

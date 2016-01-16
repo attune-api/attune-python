@@ -4,8 +4,6 @@ import unittest
 class TestApi(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.auth_token = 'a12a4e7a-b359-4c4f-aced-582673f2a6d9'
-
         from attune.client.client import Client
         from attune.client.configuration import Configuration
 

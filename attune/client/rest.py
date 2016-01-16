@@ -20,17 +20,14 @@ https://www.dropbox.com/developers/core/sdks/python
 """
 from __future__ import absolute_import
 
-import sys
 import io
 import json
-import ssl
-import certifi
 import logging
+import sys
 
 # python 2 and python 3 compatibility library
-from six import iteritems
-
-from .configuration import Configuration
+import requests
+from requests.adapters import HTTPAdapter
 
 try:
     import urllib3
@@ -44,67 +41,47 @@ except ImportError:
     # for python2
     from urllib import urlencode
 
-
 logger = logging.getLogger(__name__)
 
 
 class RESTResponse(io.IOBase):
-
     def __init__(self, resp):
         self.urllib3_response = resp
-        self.status = resp.status
+        self.status = resp.status_code
         self.reason = resp.reason
-        self.data = resp.data
+        self.data = resp.content
 
     def getheaders(self):
         """
         Returns a dictionary of the response headers.
         """
-        return self.urllib3_response.getheaders()
+        return self.urllib3_response.headers
 
     def getheader(self, name, default=None):
         """
         Returns a given response header.
         """
-        return self.urllib3_response.getheader(name, default)
+        return self.urllib3_response.headers.get(name, default)
 
 
 class RESTClientObject(object):
+    def __init__(self, config):
+        self.config = config
 
-    def __init__(self, pools_size=4):
-        # urllib3.PoolManager will pass all kw parameters to connectionpool
-        # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/poolmanager.py#L75
-        # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/connectionpool.py#L680
-        # ca_certs vs cert_file vs key_file
-        # http://stackoverflow.com/a/23957365/2985775
+        self.pool_manager = requests.Session()
 
-        # cert_reqs
-        if Configuration().verify_ssl:
-            cert_reqs = ssl.CERT_REQUIRED
-        else:
-            cert_reqs = ssl.CERT_NONE
-
-        # ca_certs
-        if Configuration().ssl_ca_cert:
-            ca_certs = Configuration().ssl_ca_cert
-        else:
-            # if not set certificate file, use Mozilla's root certificates.
-            ca_certs = certifi.where()
-
-        # cert_file
-        cert_file = Configuration().cert_file
-
-        # key file
-        key_file = Configuration().key_file
-
-        # https pool manager
-        self.pool_manager = urllib3.PoolManager(
-            num_pools=pools_size,
-            cert_reqs=cert_reqs,
-            ca_certs=ca_certs,
-            cert_file=cert_file,
-            key_file=key_file
+        adapter = HTTPAdapter(
+                pool_connections=config.http_pool_size,
+                pool_maxsize=config.http_pool_size,
+                max_retries=config.http_max_retries,
+                pool_block=True,
         )
+        self.pool_manager.mount('https://', adapter)
+        self.pool_manager.mount('http://', adapter)
+
+        self.pool_manager.verify = bool(self.config.verify_ssl)
+
+        self.timeout = (float(self.config.http_timeout_connect), float(self.config.http_timeout_read))
 
     def request(self, method, url, query_params=None, headers=None,
                 body=None, post_params=None):
@@ -123,7 +100,7 @@ class RESTClientObject(object):
 
         if post_params and body:
             raise ValueError(
-                "body parameter cannot be used with post_params parameter."
+                    "body parameter cannot be used with post_params parameter."
             )
 
         post_params = post_params or {}
@@ -139,26 +116,28 @@ class RESTClientObject(object):
                     url += '?' + urlencode(query_params)
                 if headers['Content-Type'] == 'application/json':
                     r = self.pool_manager.request(method, url,
-                                                  body=json.dumps(body),
-                                                  headers=headers)
+                                                  data=json.dumps(body),
+                                                  headers=headers,
+                                                  timeout=self.timeout)
                 if headers['Content-Type'] == 'application/x-www-form-urlencoded':
                     r = self.pool_manager.request(method, url,
-                                                  fields=post_params,
-                                                  encode_multipart=False,
-                                                  headers=headers)
+                                                  data=post_params,
+                                                  headers=headers,
+                                                  timeout=self.timeout)
                 if headers['Content-Type'] == 'multipart/form-data':
                     # must del headers['Content-Type'], or the correct Content-Type
                     # which generated by urllib3 will be overwritten.
                     del headers['Content-Type']
                     r = self.pool_manager.request(method, url,
-                                                  fields=post_params,
-                                                  encode_multipart=True,
-                                                  headers=headers)
+                                                  data=post_params,
+                                                  headers=headers,
+                                                  timeout=self.timeout)
             # For `GET`, `HEAD`, `DELETE`
             else:
                 r = self.pool_manager.request(method, url,
-                                              fields=query_params,
-                                              headers=headers)
+                                              params=query_params,
+                                              headers=headers,
+                                              timeout=self.timeout)
         except urllib3.exceptions.SSLError as e:
             msg = "{0}\n{1}".format(type(e).__name__, str(e))
             raise ApiException(status=0, reason=msg)
@@ -223,7 +202,6 @@ class RESTClientObject(object):
 
 
 class ApiException(Exception):
-
     def __init__(self, status=None, reason=None, http_resp=None):
         if http_resp:
             self.status = http_resp.status
@@ -240,7 +218,7 @@ class ApiException(Exception):
         """
         Custom error messages for exception
         """
-        error_message = "({0})\n"\
+        error_message = "({0})\n" \
                         "Reason: {1}\n".format(self.status, self.reason)
         if self.headers:
             error_message += "HTTP response headers: {0}\n".format(self.headers)

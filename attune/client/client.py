@@ -52,9 +52,10 @@ from .configuration import Configuration
 class BaseClient(object):
     def __init__(self, config=None):
         self.config = config or Configuration()
+
         self.host = self.config.host
 
-        self.rest_client = RESTClientObject()
+        self.rest_client = RESTClientObject(self.config)
 
         self.default_headers = {}
 

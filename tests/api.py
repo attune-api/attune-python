@@ -10,7 +10,7 @@ class TestApi(unittest.TestCase):
         cls.config = Configuration()
         cls.config.host = 'https://api-test.attune.co/'
 
-        cls.client = Client()
+        cls.client = Client(cls.config)
 
     def test_api_initialized(self):
         self.assertIsNotNone(self.config)

@@ -20,15 +20,12 @@ Copyright 2015 SmartBear Software
 
 from __future__ import absolute_import
 
-import urllib3
-
 try:
     import httplib
 except ImportError:
     # for python3
     import http.client as httplib
 
-import sys
 import logging
 
 from six import iteritems
@@ -48,7 +45,7 @@ def singleton(cls, *args, **kw):
 class Settings(object):
     def __init__(self):
         # Default Base url
-        self.host = "https://api.attune.co/"
+        self.host = "https://api-west1.attune.co"
         # Default api client
         self.api_client = None
         # Temp file folder for downloading files
@@ -76,12 +73,13 @@ class Settings(object):
         # SSL/TLS verification
         # Set this to false to skip verifying SSL certificate when calling API from https server.
         self.verify_ssl = True
-        # Set this to customize the certificate file to verify the peer.
-        self.ssl_ca_cert = None
-        # client certificate file
-        self.cert_file = None
-        # client key file
-        self.key_file = None
+
+        # HTTP Pool settings
+        self.http_pool_connections = 100
+        self.http_pool_size = 100
+        self.http_max_retries = 3
+        self.http_timeout_read = 1
+        self.http_timeout_connect = 1
 
     @property
     def logger_file(self):
@@ -171,27 +169,6 @@ class Settings(object):
         self.__logger_format = value
         self.logger_formatter = logging.Formatter(self.__logger_format)
 
-    def get_api_key_with_prefix(self, identifier):
-        """
-        Gets API key (with prefix if set).
-
-        :param identifier: The identifier of apiKey.
-        :return: The token for api key authentication.
-        """
-        if self.api_key.get(identifier) and self.api_key_prefix.get(identifier):
-            return self.api_key_prefix[identifier] + ' ' + self.api_key[identifier]
-        elif self.api_key.get(identifier):
-            return self.api_key[identifier]
-
-    def get_basic_auth_token(self):
-        """
-        Gets HTTP basic authentication header (string).
-
-        :return: The token for basic HTTP authentication.
-        """
-        return urllib3.util.make_headers(basic_auth=self.username + ':' + self.password) \
-            .get('authorization')
-
     def auth_settings(self):
         """
         Gets Auth Settings dict for api client.
@@ -206,19 +183,6 @@ class Settings(object):
                 'value': 'Bearer ' + self.access_token
             }
         }
-
-    def to_debug_report(self):
-        """
-        Gets the essential information for debugging.
-
-        :return: The report for debugging.
-        """
-        return "Python SDK Debug Report:\n" \
-               "OS: {env}\n" \
-               "Python Version: {pyversion}\n" \
-               "Version of the API: 1.0\n" \
-               "SDK Package Version: 1.0.0". \
-            format(env=sys.platform, pyversion=sys.version)
 
 
 @singleton

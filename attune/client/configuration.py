@@ -78,8 +78,8 @@ class Settings(object):
         self.http_pool_connections = 100
         self.http_pool_size = 100
         self.http_max_retries = 3
-        self.http_timeout_read = 1
-        self.http_timeout_connect = 1
+        self.http_timeout_read = 5
+        self.http_timeout_connect = 5
 
     @property
     def logger_file(self):

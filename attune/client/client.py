@@ -76,7 +76,7 @@ class BaseClient(object):
     def __call_api(self, resource_path, method,
                    path_params=None, query_params=None, header_params=None,
                    body=None, post_params=None, files=None,
-                   response_type=None, auth_settings=None, callback=None):
+                   response_type=None, auth_settings=None, oauth_token=None, callback=None):
 
         # headers parameters
         header_params = header_params or {}
@@ -104,7 +104,7 @@ class BaseClient(object):
             post_params = self.sanitize_for_serialization(post_params)
 
         # auth setting
-        self.update_params_for_auth(header_params, query_params, auth_settings)
+        self.update_params_for_auth(oauth_token, header_params, query_params, auth_settings)
 
         # body
         if body:
@@ -258,7 +258,7 @@ class BaseClient(object):
     def call_api(self, resource_path, method,
                  path_params=None, query_params=None, header_params=None,
                  body=None, post_params=None, files=None,
-                 response_type=None, auth_settings=None, callback=None):
+                 response_type=None, auth_settings=None, oauth_token=None, callback=None):
         """
         Makes the HTTP request (synchronous) and return the deserialized data.
         To make an async request, define a function for callback.
@@ -290,7 +290,7 @@ class BaseClient(object):
             return self.__call_api(resource_path, method,
                                    path_params, query_params, header_params,
                                    body, post_params, files,
-                                   response_type, auth_settings, callback)
+                                   response_type, auth_settings, oauth_token, callback)
         else:
             thread = threading.Thread(target=self.__call_api,
                                       args=(resource_path, method,
@@ -298,7 +298,7 @@ class BaseClient(object):
                                             header_params, body,
                                             post_params, files,
                                             response_type, auth_settings,
-                                            callback))
+                                            oauth_token, callback))
         thread.start()
         return thread
 
@@ -410,7 +410,7 @@ class BaseClient(object):
         else:
             return content_types[0]
 
-    def update_params_for_auth(self, headers, querys, auth_settings):
+    def update_params_for_auth(self, oauth_token, headers, querys, auth_settings):
         """
         Updates header and query params based on authentication setting.
 
@@ -418,25 +418,10 @@ class BaseClient(object):
         :param querys: Query parameters dict to be updated.
         :param auth_settings: Authentication setting identifiers list.
         """
-        config = self.config
 
-        if config.access_token and not auth_settings:
-            auth_settings = ['oauth2']
-
-        if not auth_settings:
-            return
-
-        for auth in auth_settings:
-            auth_setting = config.auth_settings().get(auth)
-            if auth_setting:
-                if auth_setting['in'] == 'header':
-                    headers[auth_setting['key']] = auth_setting['value']
-                elif auth_setting['in'] == 'query':
-                    querys[auth_setting['key']] = auth_setting['value']
-                else:
-                    raise ValueError(
-                            'Authentication token must be in `query` or `header`'
-                    )
+        token = oauth_token or self.config.access_token
+        if token:
+            headers['Authorization'] = 'Bearer %s' % token
 
     def __deserialize_file(self, response):
         """
@@ -591,17 +576,17 @@ class Client(BaseClient):
                                  callback=callback)
         return response
 
-    def create_anonymous(self, callback=None):
-        return self.api.create(callback=callback)
+    def create_anonymous(self, oauth_token=None, callback=None):
+        return self.api.create(oauth_token=oauth_token, callback=callback)
 
-    def bind(self, anonymous_id, customer_id, callback=None):
+    def bind(self, anonymous_id, customer_id, oauth_token=None, callback=None):
         customer = Customer()
         customer.customer = customer_id
 
-        return self.api.update(anonymous_id, customer, callback=callback)
+        return self.api.update(anonymous_id, customer, oauth_token=oauth_token, callback=callback)
 
-    def get_bound_customer(self, anonymous_id, callback=None):
-        return self.api.get(anonymous_id, callback=callback)
+    def get_bound_customer(self, anonymous_id, oauth_token=None, callback=None):
+        return self.api.get(anonymous_id, oauth_token=oauth_token, callback=callback)
 
-    def get_rankings(self, ranking_params, callback=None):
-        return self.api.get_rankings(ranking_params, callback=callback)
+    def get_rankings(self, ranking_params, oauth_token=None, callback=None):
+        return self.api.get_rankings(ranking_params, oauth_token=oauth_token, callback=callback)

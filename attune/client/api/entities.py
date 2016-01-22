@@ -36,14 +36,14 @@ class Entities(object):
     Ref: https://github.com/swagger-api/swagger-codegen
     """
 
-    def __init__(self, api_client=None):
+    def __init__(self, client=None):
         config = Configuration()
-        if api_client:
-            self.api_client = api_client
+        if client:
+            self.client = client
         else:
-            if not config.api_client:
-                config.api_client = Client()
-            self.api_client = config.api_client
+            if not config.client:
+                config.client = Client()
+            self.client = config.client
 
     def create(self, **kwargs):
         """
@@ -67,6 +67,7 @@ class Entities(object):
 
         all_params = []
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -93,28 +94,29 @@ class Entities(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(resource_path, method,
-                                            path_params,
-                                            query_params,
-                                            header_params,
-                                            body=body_params,
-                                            post_params=form_params,
-                                            files=files,
-                                            response_type='AnonymousResult',
-                                            auth_settings=auth_settings,
-                                            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='AnonymousResult',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def get(self, anonymous, **kwargs):
@@ -144,6 +146,7 @@ class Entities(object):
 
         all_params = ['anonymous']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -172,28 +175,29 @@ class Entities(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(resource_path, method,
-                                            path_params,
-                                            query_params,
-                                            header_params,
-                                            body=body_params,
-                                            post_params=form_params,
-                                            files=files,
-                                            response_type='Customer',
-                                            auth_settings=auth_settings,
-                                            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='Customer',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def update(self, anonymous, request, **kwargs):
@@ -228,6 +232,7 @@ class Entities(object):
 
         all_params = ['anonymous', 'request']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -258,19 +263,19 @@ class Entities(object):
             body_params = params['request']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(
+        response = self.client.call_api(
             resource_path,
             method,
             path_params,
@@ -281,7 +286,8 @@ class Entities(object):
             files=files,
             response_type='BlacklistUpdateResponse',
             auth_settings=auth_settings,
-            callback=params.get('callback'))
+            callback=params.get('callback'),
+            oauth_token=params.get('oauth_token'))
         return response
 
     def get_rankings(self, params, **kwargs):
@@ -311,6 +317,7 @@ class Entities(object):
 
         all_params = ['params']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -339,28 +346,29 @@ class Entities(object):
             body_params = params['params']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(resource_path, method,
-                                            path_params,
-                                            query_params,
-                                            header_params,
-                                            body=body_params,
-                                            post_params=form_params,
-                                            files=files,
-                                            response_type='RankedEntities',
-                                            auth_settings=auth_settings,
-                                            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='RankedEntities',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def batch_get_rankings(self, batch_request, **kwargs):
@@ -390,6 +398,7 @@ class Entities(object):
 
         all_params = ['batch_request']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -418,28 +427,29 @@ class Entities(object):
             body_params = params['batch_request']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(resource_path, method,
-                                            path_params,
-                                            query_params,
-                                            header_params,
-                                            body=body_params,
-                                            post_params=form_params,
-                                            files=files,
-                                            response_type='BatchRankingResult',
-                                            auth_settings=auth_settings,
-                                            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='BatchRankingResult',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def blacklist_get_all(self, **kwargs):
@@ -464,6 +474,7 @@ class Entities(object):
 
         all_params = []
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -491,30 +502,29 @@ class Entities(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(
-            resource_path,
-            method,
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=files,
-            response_type='BlacklistGetResponse',
-            auth_settings=auth_settings,
-            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='BlacklistGetResponse',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def blacklist_save(self, **kwargs):
@@ -540,6 +550,7 @@ class Entities(object):
 
         all_params = ['params']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -569,30 +580,29 @@ class Entities(object):
             body_params = params['params']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(
-            resource_path,
-            method,
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=files,
-            response_type='BlacklistSaveResponse',
-            auth_settings=auth_settings,
-            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='BlacklistSaveResponse',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def blacklist_get(self, id, **kwargs):
@@ -622,6 +632,7 @@ class Entities(object):
 
         all_params = ['id']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -651,28 +662,29 @@ class Entities(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(resource_path, method,
-                                            path_params,
-                                            query_params,
-                                            header_params,
-                                            body=body_params,
-                                            post_params=form_params,
-                                            files=files,
-                                            response_type='Blacklist',
-                                            auth_settings=auth_settings,
-                                            callback=params.get('callback'))
+        response = self.client.call_api(resource_path, method,
+                                        path_params,
+                                        query_params,
+                                        header_params,
+                                        body=body_params,
+                                        post_params=form_params,
+                                        files=files,
+                                        response_type='Blacklist',
+                                        auth_settings=auth_settings,
+                                        callback=params.get('callback'),
+                                        oauth_token=params.get('oauth_token'))
         return response
 
     def blacklist_update(self, id, **kwargs):
@@ -703,6 +715,7 @@ class Entities(object):
 
         all_params = ['id', 'params']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -734,19 +747,19 @@ class Entities(object):
             body_params = params['params']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(
+        response = self.client.call_api(
             resource_path,
             method,
             path_params,
@@ -757,7 +770,8 @@ class Entities(object):
             files=files,
             response_type='BlacklistUpdateResponse',
             auth_settings=auth_settings,
-            callback=params.get('callback'))
+            callback=params.get('callback'),
+            oauth_token=params.get('oauth_token'))
         return response
 
     def blacklist_delete(self, id, **kwargs):
@@ -787,6 +801,7 @@ class Entities(object):
 
         all_params = ['id']
         all_params.append('callback')
+        all_params.append('oauth_token')
 
         params = locals()
         for key, val in iteritems(params['kwargs']):
@@ -816,19 +831,19 @@ class Entities(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.client.\
             select_header_accept([])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.client.\
             select_header_content_type([])
 
         # Authentication setting
         auth_settings = []
 
-        response = self.api_client.call_api(
+        response = self.client.call_api(
             resource_path,
             method,
             path_params,
@@ -839,5 +854,6 @@ class Entities(object):
             files=files,
             response_type='BlacklistDeleteResponse',
             auth_settings=auth_settings,
-            callback=params.get('callback'))
+            callback=params.get('callback'),
+            oauth_token=params.get('oauth_token'))
         return response

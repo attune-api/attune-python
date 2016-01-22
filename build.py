@@ -98,7 +98,8 @@ def build(*args):
                 'label': 'api',
                 'src': list(x for x in glob('%s/swagger_client/apis/*.py' % tmpdir) if not x.endswith('__init__.py')),
                 'dst': os.path.join('attune', 'client', 'api'),
-                'rewrite': {'fix_this_api.py': 'entities.py'}
+                'rewrite': {'fix_this_api.py': 'entities.py'},
+                'add_oauth_token': True
             }
         )
         process_files = []
@@ -111,6 +112,23 @@ def build(*args):
                 dst = os.path.join(parsed['dst'], rewrite.get(os.path.basename(fname), os.path.basename(fname)))
                 cl.secho('  - %s => %s' % (os.path.basename(fname), dst), fg='blue')
                 copyfile(fname, dst)
+
+                if parsed.get('add_oauth_token'):
+                    cl.secho('  - Adding oauth_token to %s' % dst, fg='blue')
+
+                    pysrc = open(dst).read()
+
+                    pysrc = re.sub("( +)(all_params.append\('callback'\))",
+                                   "\\1\\2\n\\1all_params.append('oauth_token')", pysrc)
+
+                    pysrc = re.sub("( +)(callback=params.get\('callback'\))",
+                                   "\\1\\2,\n\\1oauth_token=params.get('oauth_token')", pysrc)
+
+                    file(dst, 'wb').write(pysrc)
+
+                pysrc = open(dst).read()
+                pysrc = pysrc.replace('api_client', 'client').replace('ApiClient', 'Client')
+                file(dst, 'wb').write(pysrc)
 
                 process_files.append(dst)
 
@@ -162,8 +180,6 @@ def build(*args):
 
         source = open(fname).read()
         file(fname, 'w').write(autopep8.fix_code(source, PEP8OPTIONS))
-
-    print CMD_PARAMS
 
 
 if __name__ == '__main__':

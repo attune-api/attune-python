@@ -15,6 +15,8 @@ class TestApi(unittest.TestCase):
         cls.config = Configuration()
         cls.config.host = 'https://api-test.attune.co/'
 
+        cls.oauth_token = 'a12a4e7a-b359-4c4f-aced-582673f2a6d9'
+
         cls.client = Client(cls.config)
 
     def on_async_callback(self, result, callback=None):
@@ -41,8 +43,6 @@ class TestApi(unittest.TestCase):
         self.assertIsNotNone(token)
         self.assertIn('access_token', token)
 
-        self.client.config.access_token = token['access_token']
-
     def test_auth_get_token_async(self):
         """
         Get auth token (async)
@@ -59,27 +59,27 @@ class TestApi(unittest.TestCase):
         Test a anonymous get request
         """
 
-        self.assertIsNotNone(self.client.create_anonymous())
+        self.assertIsNotNone(self.client.create_anonymous(oauth_token=self.oauth_token))
 
     def test_create_anonymous_async(self):
         """
         Test a anonymous get request (async)
         """
 
-        self.client.create_anonymous(callback=self.on_async_callback).join()
+        self.client.create_anonymous(oauth_token=self.oauth_token, callback=self.on_async_callback).join()
 
     def test_bind(self):
         """
         Test a binding call request
         """
 
-        anonymous = self.client.create_anonymous()
+        anonymous = self.client.create_anonymous(oauth_token=self.oauth_token)
         self.assertIsNotNone(anonymous)
 
         customer = Customer()
         customer.customer = 'py-unittest-customer-%s' % datetime.now()
 
-        self.assertIsNotNone(self.client.bind(anonymous, customer.customer))
+        self.assertIsNotNone(self.client.bind(anonymous, customer.customer, oauth_token=self.oauth_token))
 
     def test_bind_async(self):
         """
@@ -92,9 +92,10 @@ class TestApi(unittest.TestCase):
             customer = Customer()
             customer.customer = 'py-unittest-customer-%s' % datetime.now()
 
-            self.client.bind(anonymous, customer.customer, callback=self.on_async_callback).join()
+            self.client.bind(anonymous, customer.customer, oauth_token=self.oauth_token,
+                             callback=self.on_async_callback).join()
 
-        self.client.create_anonymous(callback=on_anon).join()
+        self.client.create_anonymous(oauth_token=self.oauth_token, callback=on_anon).join()
 
     def test_get_bound_customer(self):
         """
@@ -104,12 +105,12 @@ class TestApi(unittest.TestCase):
         token = self.client.get_auth_token("attune", "a433de60fe2311e3a3ac0800200c9a66")
         self.assertIsNotNone(token)
 
-        self.client.config.access_token = token['access_token']
+        token = token['access_token']
 
-        anonymous = self.client.create_anonymous()
+        anonymous = self.client.create_anonymous(oauth_token=token)
         self.assertIsNotNone(anonymous)
 
-        customer = self.client.get_bound_customer(anonymous.id)
+        customer = self.client.get_bound_customer(anonymous.id, oauth_token=token)
         self.assertIsNotNone(customer)
 
     def test_get_bound_customer_async(self):
@@ -120,13 +121,14 @@ class TestApi(unittest.TestCase):
         def on_token(token):
             self.assertIsNotNone(token)
 
+            token = token['access_token']
+
             def on_anon(anonymous):
                 self.assertIsNotNone(anonymous)
 
-                self.client.get_bound_customer(anonymous.id, callback=self.on_async_callback).join()
+                self.client.get_bound_customer(anonymous.id, oauth_token=token, callback=self.on_async_callback).join()
 
-            self.client.config.access_token = token['access_token']
-            self.client.create_anonymous(callback=on_anon).join()
+            self.client.create_anonymous(oauth_token=token, callback=on_anon).join()
 
         self.client.get_auth_token("attune", "a433de60fe2311e3a3ac0800200c9a66", callback=on_token).join()
 
@@ -137,9 +139,9 @@ class TestApi(unittest.TestCase):
 
         customer = Customer()
         customer.customer = 'pytest-customer'
-        self.client.bind('12345', customer.customer)
+        self.client.bind('12345', customer.customer, oauth_token=self.oauth_token)
 
-        result_customer = self.client.get_bound_customer('12345')
+        result_customer = self.client.get_bound_customer('12345', oauth_token=self.oauth_token)
         self.assertIsNotNone(result_customer)
 
         self.assertEqual(customer.customer, result_customer.customer)
@@ -155,11 +157,11 @@ class TestApi(unittest.TestCase):
 
                 self.assertEqual(customer.customer, result_customer.customer)
 
-            self.client.get_bound_customer('12345', callback=on_get).join()
+            self.client.get_bound_customer('12345', oauth_token=self.oauth_token, callback=on_get).join()
 
         customer = Customer()
         customer.customer = 'pytest-customer'
-        self.client.bind('12345', customer.customer, callback=on_bind).join()
+        self.client.bind('12345', customer.customer, oauth_token=self.oauth_token, callback=on_bind).join()
 
     def test_get_rankings(self):
         """
@@ -167,7 +169,7 @@ class TestApi(unittest.TestCase):
         list matches the list supplied in the params
         """
 
-        anonymous = self.client.create_anonymous()
+        anonymous = self.client.create_anonymous(oauth_token=self.oauth_token)
         self.assertIsNotNone(anonymous)
 
         params = RankingParams()
@@ -176,9 +178,7 @@ class TestApi(unittest.TestCase):
         params.entity_type = "products"
         params.ids = self.with_default_id_list
 
-        self.client.config.access_token = "a12a4e7a-b359-4c4f-aced-582673f2a6d9"
-
-        rankings = self.client.get_rankings(params)
+        rankings = self.client.get_rankings(params, oauth_token=self.oauth_token)
 
         self.assertEqual(len(rankings.ranking), len(params.ids))
 
@@ -191,3 +191,21 @@ class TestApi(unittest.TestCase):
     def test_get_rankings_async(self):
         # TODO: implement
         pass
+
+    def test_scope_get_rankings_404(self):
+        pass
+
+    def make_scope_ranking_call(self, sale_id, id_list):
+        rankingParams = RankingParams()
+        rankingParams.anonymous = 'some-anon-id'
+        rankingParams.view = "/sales/" + sale_id
+        rankingParams.entity_source = "scope"
+
+        rankingParams.scope = [
+            "sale=" + sale_id,
+            "color=red",
+            "size=M"
+        ]
+
+        rankingParams.entity_type = "products"
+        rankingParams.application = "mobile_event_page"

@@ -169,22 +169,6 @@ class Settings(object):
         self.__logger_format = value
         self.logger_formatter = logging.Formatter(self.__logger_format)
 
-    def auth_settings(self):
-        """
-        Gets Auth Settings dict for api client.
-
-        :return: The Auth Settings information dict.
-        """
-        return {
-            'oauth2': {
-                'type': 'oauth2',
-                'in': 'header',
-                'key': 'Authorization',
-                'value': 'Bearer ' + self.access_token
-            }
-        }
-
-
 @singleton
 def Configuration():
     return Settings()

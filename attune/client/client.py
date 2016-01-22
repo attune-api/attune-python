@@ -30,6 +30,7 @@ import threading
 from datetime import date
 from datetime import datetime
 
+from attune.client.model import Customer
 from .rest import ApiException
 from .rest import RESTClientObject
 
@@ -589,3 +590,18 @@ class Client(BaseClient):
                                  header_params=header_params,
                                  callback=callback)
         return response
+
+    def create_anonymous(self, callback=None):
+        return self.api.create(callback=callback)
+
+    def bind(self, anonymous_id, customer_id, callback=None):
+        customer = Customer()
+        customer.customer = customer_id
+
+        return self.api.update(anonymous_id, customer, callback=callback)
+
+    def get_bound_customer(self, anonymous_id, callback=None):
+        return self.api.get(anonymous_id, callback=callback)
+
+    def get_rankings(self, ranking_params, callback=None):
+        return self.api.get_rankings(ranking_params, callback=callback)

@@ -58,7 +58,7 @@ class Settings(object):
         # Logging Settings
         self.logger = {}
         self.logger["package_logger"] = logging.getLogger("swagger_client")
-        self.logger["urllib3_logger"] = logging.getLogger("urllib3")
+        self.logger["urllib3_logger"] = logging.getLogger("requests.packages.urllib3")
         # Log format
         self.logger_format = '%(asctime)s %(levelname)s %(message)s'
         # Log stream handler
@@ -145,7 +145,7 @@ class Settings(object):
             # if debug status is False, turn off debug logging,
             # setting log level to default `logging.WARNING`
             for _, logger in iteritems(self.logger):
-                logger.setLevel(logging.WARNING)
+                logger.setLevel(logging.ERROR)
             # turn off httplib debug
             httplib.HTTPConnection.debuglevel = 0
 

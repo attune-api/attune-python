@@ -95,8 +95,9 @@ class BaseClient(object):
         # query parameters
         if query_params:
             query_params = self.sanitize_for_serialization(query_params)
-            query_params = {k: self.to_path_value(v)
-                            for k, v in iteritems(query_params)}
+            # Todo: we do this in requests library
+            # query_params = {k: self.to_path_value(v)
+            #                 for k, v in iteritems(query_params)}
 
         # post parameters
         if post_params or files:
@@ -589,4 +590,32 @@ class Client(BaseClient):
         return self.api.get(anonymous_id, oauth_token=oauth_token, callback=callback)
 
     def get_rankings(self, ranking_params, oauth_token=None, callback=None):
-        return self.api.get_rankings(ranking_params, oauth_token=oauth_token, callback=callback)
+        ranking_params.entity_source = ranking_params.entity_source or 'ids'
+
+        if ranking_params.entity_source.upper() == 'IDS':
+            return self.api.get_rankings(ranking_params, oauth_token=oauth_token, callback=callback)
+        else:
+            return self._get_rankings_get(ranking_params, oauth_token=oauth_token, callback=callback)
+
+    def _get_rankings_get(self, params, **kwargs):
+        if params is None:
+            raise ValueError(
+                    "Missing the required parameter `params` when calling `get_rankings`")
+
+        resource_path = '/entities/ranking'.replace('{format}', 'json')
+
+        if params.entity_source.upper() == 'SCOPE':
+            params.scope = list('%s=%s' % (x.name, x.value) for x in params.scope or [])
+
+            params.ids = None
+
+        header_params = {
+            'Content-Type': self.select_header_content_type([])
+        }
+
+        return self.call_api(resource_path, 'GET',
+                             query_params=params,
+                             header_params=header_params,
+                             response_type='RankedEntities',
+                             callback=kwargs.get('callback'),
+                             oauth_token=kwargs.get('oauth_token'))

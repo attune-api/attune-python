@@ -108,8 +108,8 @@ class RESTClientObject(object):
         post_params = post_params or {}
         headers = headers or {}
 
-        if 'Content-Type' not in headers:
-            headers['Content-Type'] = 'application/json'
+        # if 'Content-Type' not in headers:
+        #     headers['Content-Type'] = 'application/json'
 
         try:
             # For `POST`, `PUT`, `PATCH`, `OPTIONS`

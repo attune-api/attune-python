@@ -2,6 +2,7 @@ import unittest
 from datetime import datetime
 
 from attune.client.model import Customer, RankingParams, ScopeEntry
+from attune.client.rest import ApiException
 
 
 class TestApi(unittest.TestCase):
@@ -13,6 +14,7 @@ class TestApi(unittest.TestCase):
         from attune.client.configuration import Configuration
 
         cls.config = Configuration()
+        # cls.config.debug = True
         cls.config.host = 'https://api-test.attune.co/'
 
         cls.oauth_token = "a12a4e7a-b359-4c4f-aced-582673f2a6d9"
@@ -193,7 +195,11 @@ class TestApi(unittest.TestCase):
         pass
 
     def test_scope_get_rankings_404(self):
-        self.make_scope_ranking_call('1007', self.with_default_id_list)
+        with self.assertRaises(ApiException) as x:
+            self.make_scope_ranking_call('1007', self.with_default_id_list)
+
+        self.assertEqual(x.exception.status, 404)
+        self.assertIn('Cannot find ranking data', x.exception.body)
 
     def test_scope_get_rankings_ok(self):
         self.assertIsNotNone(self.make_scope_ranking_call('59784', self.with_default_id_list))
@@ -219,6 +225,5 @@ class TestApi(unittest.TestCase):
 
         rankingParams.entity_type = "products"
         rankingParams.application = "mobile_event_page"
-        rankingParams.ids = []
 
         return self.client.get_rankings(rankingParams, oauth_token=self.oauth_token)

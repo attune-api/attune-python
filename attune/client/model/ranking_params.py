@@ -38,85 +38,44 @@ class RankingParams(object):
                                   and the value is json key in definition.
         """
         self.swagger_types = {
-            'quantities': 'list[Int]',
-            'view': 'str',
             'entity_type': 'str',
+            'entity_source': 'str',
             'ids': 'list[str]',
-            'ip': 'str',
             'application': 'str',
+            'ip': 'str',
             'customer': 'str',
+            'view': 'str',
+            'quantities': 'list[Int]',
             'anonymous': 'str',
             'user_agent': 'str',
-            'scope': 'list[ScopeEntry]'
+            'scope': 'list[str]'
         }
 
         self.attribute_map = {
-            'quantities': 'quantities',
-            'view': 'view',
             'entity_type': 'entityType',
+            'entity_source': 'entitySource',
             'ids': 'ids',
-            'ip': 'ip',
             'application': 'application',
+            'ip': 'ip',
             'customer': 'customer',
+            'view': 'view',
+            'quantities': 'quantities',
             'anonymous': 'anonymous',
             'user_agent': 'userAgent',
             'scope': 'scope'
         }
 
-        self._quantities = None
-        self._view = None
         self._entity_type = None
+        self._entity_source = None
         self._ids = None
-        self._ip = None
         self._application = None
+        self._ip = None
         self._customer = None
+        self._view = None
+        self._quantities = None
         self._anonymous = None
         self._user_agent = None
         self._scope = None
-
-    @property
-    def quantities(self):
-        """
-        Gets the quantities of this RankingParams.
-
-
-        :return: The quantities of this RankingParams.
-        :rtype: list[Int]
-        """
-        return self._quantities
-
-    @quantities.setter
-    def quantities(self, quantities):
-        """
-        Sets the quantities of this RankingParams.
-
-
-        :param quantities: The quantities of this RankingParams.
-        :type: list[Int]
-        """
-        self._quantities = quantities
-
-    @property
-    def view(self):
-        """
-        Gets the view of this RankingParams.
-
-
-        :return: The view of this RankingParams.
-        :rtype: str
-        """
-        return self._view
-
-    @view.setter
-    def view(self, view):
-        """
-        Sets the view of this RankingParams.
-
-
-        :param view: The view of this RankingParams.
-        :type: str
-        """
-        self._view = view
 
     @property
     def entity_type(self):
@@ -141,6 +100,28 @@ class RankingParams(object):
         self._entity_type = entity_type
 
     @property
+    def entity_source(self):
+        """
+        Gets the entity_source of this RankingParams.
+
+
+        :return: The entity_source of this RankingParams.
+        :rtype: str
+        """
+        return self._entity_source
+
+    @entity_source.setter
+    def entity_source(self, entity_source):
+        """
+        Sets the entity_source of this RankingParams.
+
+
+        :param entity_source: The entity_source of this RankingParams.
+        :type: str
+        """
+        self._entity_source = entity_source
+
+    @property
     def ids(self):
         """
         Gets the ids of this RankingParams.
@@ -161,28 +142,6 @@ class RankingParams(object):
         :type: list[str]
         """
         self._ids = ids
-
-    @property
-    def ip(self):
-        """
-        Gets the ip of this RankingParams.
-
-
-        :return: The ip of this RankingParams.
-        :rtype: str
-        """
-        return self._ip
-
-    @ip.setter
-    def ip(self, ip):
-        """
-        Sets the ip of this RankingParams.
-
-
-        :param ip: The ip of this RankingParams.
-        :type: str
-        """
-        self._ip = ip
 
     @property
     def application(self):
@@ -207,6 +166,28 @@ class RankingParams(object):
         self._application = application
 
     @property
+    def ip(self):
+        """
+        Gets the ip of this RankingParams.
+
+
+        :return: The ip of this RankingParams.
+        :rtype: str
+        """
+        return self._ip
+
+    @ip.setter
+    def ip(self, ip):
+        """
+        Sets the ip of this RankingParams.
+
+
+        :param ip: The ip of this RankingParams.
+        :type: str
+        """
+        self._ip = ip
+
+    @property
     def customer(self):
         """
         Gets the customer of this RankingParams.
@@ -227,6 +208,50 @@ class RankingParams(object):
         :type: str
         """
         self._customer = customer
+
+    @property
+    def view(self):
+        """
+        Gets the view of this RankingParams.
+
+
+        :return: The view of this RankingParams.
+        :rtype: str
+        """
+        return self._view
+
+    @view.setter
+    def view(self, view):
+        """
+        Sets the view of this RankingParams.
+
+
+        :param view: The view of this RankingParams.
+        :type: str
+        """
+        self._view = view
+
+    @property
+    def quantities(self):
+        """
+        Gets the quantities of this RankingParams.
+
+
+        :return: The quantities of this RankingParams.
+        :rtype: list[Int]
+        """
+        return self._quantities
+
+    @quantities.setter
+    def quantities(self, quantities):
+        """
+        Sets the quantities of this RankingParams.
+
+
+        :param quantities: The quantities of this RankingParams.
+        :type: list[Int]
+        """
+        self._quantities = quantities
 
     @property
     def anonymous(self):

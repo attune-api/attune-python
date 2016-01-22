@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from attune.client.model import Customer, RankingParams
+from attune.client.model import Customer, RankingParams, ScopeEntry
 
 
 class TestApi(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestApi(unittest.TestCase):
         cls.config = Configuration()
         cls.config.host = 'https://api-test.attune.co/'
 
-        cls.oauth_token = 'a12a4e7a-b359-4c4f-aced-582673f2a6d9'
+        cls.oauth_token = "a12a4e7a-b359-4c4f-aced-582673f2a6d9"
 
         cls.client = Client(cls.config)
 
@@ -193,7 +193,10 @@ class TestApi(unittest.TestCase):
         pass
 
     def test_scope_get_rankings_404(self):
-        pass
+        self.make_scope_ranking_call('1007', self.with_default_id_list)
+
+    def test_scope_get_rankings_ok(self):
+        self.assertIsNotNone(self.make_scope_ranking_call('59784', self.with_default_id_list))
 
     def make_scope_ranking_call(self, sale_id, id_list):
         rankingParams = RankingParams()
@@ -201,11 +204,21 @@ class TestApi(unittest.TestCase):
         rankingParams.view = "/sales/" + sale_id
         rankingParams.entity_source = "scope"
 
+        def entry(name, value):
+            item = ScopeEntry()
+            item.name = name
+            item.value = value
+
+            return item
+
         rankingParams.scope = [
-            "sale=" + sale_id,
-            "color=red",
-            "size=M"
+            entry('sale', sale_id),
+            entry('color', 'red'),
+            entry('size', 'M')
         ]
 
         rankingParams.entity_type = "products"
         rankingParams.application = "mobile_event_page"
+        rankingParams.ids = []
+
+        return self.client.get_rankings(rankingParams, oauth_token=self.oauth_token)

@@ -114,7 +114,7 @@ def build(*args):
                 copyfile(fname, dst)
 
                 if parsed.get('add_oauth_token'):
-                    cl.secho('  - Adding oauth_token to %s' % dst, fg='blue')
+                    cl.secho('    - Adding oauth_token to %s' % dst, fg='blue')
 
                     pysrc = open(dst).read()
 
@@ -128,6 +128,31 @@ def build(*args):
 
                 pysrc = open(dst).read()
                 pysrc = pysrc.replace('api_client', 'client').replace('ApiClient', 'Client')
+
+                if dst.endswith('ranking_params.py'):
+                    # missed entitySource to model
+
+                    cl.secho('    - Adding entitySource to RankingParams', fg='blue')
+
+                    pysrc = pysrc.replace("'entity_type': 'str',", "'entity_type': 'str',\n'entity_source': 'str',")
+
+                    pysrc = pysrc.replace("'entity_type': 'entityType',",
+                                          "'entity_type': 'entityType',\n'entity_source': 'entitySource',")
+
+                    pysrc = re.sub("( +)self._entity_type = None *\n",
+                                   "\\1self._entity_type = None\n\\1self._entity_source = None\n", pysrc)
+
+                    entity_type = re.search(' +@property\s+def entity_type\\(self\\):.*= entity_type *\n', pysrc,
+                                            re.DOTALL)
+                    if not entity_type:
+                        cl.secho('    - Not found entity_type property setters/getters. Abort.', fg='red')
+                        exit()
+
+                    entity_type = entity_type.group(0)
+                    entity_source = entity_type.replace('entity_type', 'entity_source')
+
+                    pysrc = pysrc.replace(entity_type, entity_type + entity_source)
+
                 file(dst, 'wb').write(pysrc)
 
                 process_files.append(dst)

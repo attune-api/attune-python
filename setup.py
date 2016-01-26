@@ -12,6 +12,6 @@ setup(
         install_requires=["urllib3 >= 1.10", "requests", "six >= 1.9", "certifi", "python-dateutil"],
         packages=['attune'],
         test_suite='tests',
-        tests_require=['coverage', 'click', 'inflection', 'autopep8']
+        tests_require=['coverage', 'click', 'inflection', 'autopep8', 'bottle']
         # include_package_data=True
 )

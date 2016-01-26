@@ -28,6 +28,7 @@ import sys
 # python 2 and python 3 compatibility library
 import requests
 from requests.adapters import HTTPAdapter
+from requests.packages.urllib3 import Retry
 
 try:
     import urllib3
@@ -46,6 +47,8 @@ logger = logging.getLogger(__name__)
 
 class RESTResponse(io.IOBase):
     def __init__(self, resp):
+        super(RESTResponse, self).__init__()
+
         self.urllib3_response = resp
         self.status = resp.status_code
         self.reason = resp.reason
@@ -70,10 +73,16 @@ class RESTClientObject(object):
 
         self.pool_manager = requests.Session()
 
+        # noinspection PyTypeChecker
         adapter = HTTPAdapter(
                 pool_connections=config.http_pool_size,
                 pool_maxsize=config.http_pool_size,
-                max_retries=config.http_max_retries,
+                max_retries=Retry(
+                        total=config.http_max_retries,
+                        connect=config.http_max_retries,
+                        read=config.http_max_retries,
+                        status_forcelist=range(500, 600)
+                ),
                 pool_block=True,
         )
         self.pool_manager.mount('https://', adapter)

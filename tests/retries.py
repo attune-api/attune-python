@@ -73,8 +73,9 @@ class TestRetries(unittest.TestCase):
                             'Content-Type': 'application/json'
                         }
                 )
-            except RetryError:
-                self.assertEqual(self.client.config.http_max_retries + 1, self.server.errors_count)
 
-            except ApiException:
-                self.assertEqual(1, self.server.errors_count)
+            except:
+                if method in ['POST', 'PUT', 'PATCH']:
+                    self.assertEqual(1, self.server.errors_count)
+                else:
+                    self.assertEqual(self.client.config.http_max_retries + 1, self.server.errors_count)

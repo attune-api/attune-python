@@ -74,6 +74,7 @@ class TestRetries(unittest.TestCase):
                         }
                 )
 
+                raise RuntimeError('We must get here 500 error because requested for it')
             except:
                 if method in ['POST', 'PUT', 'PATCH']:
                     self.assertEqual(1, self.server.errors_count)

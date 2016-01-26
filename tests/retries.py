@@ -53,3 +53,11 @@ class TestRetries(unittest.TestCase):
                 self.client.rest_client.GET(self.base_url % ('/error/%s' % code))
             except ApiException:
                 self.assertEqual(self.server.errors_count, 1)
+
+    def test_200_error_pass_without_retries(self):
+        for code in range(200, 205):
+            self.server.reset_errors_count()
+
+            self.client.rest_client.GET(self.base_url % ('/error/%s' % code))
+
+            self.assertEqual(self.server.errors_count, 1)

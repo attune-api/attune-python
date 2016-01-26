@@ -27,10 +27,10 @@ class TestRetries(unittest.TestCase):
         self.assertIsNotNone(result)
         self.assertEqual(result.data, 'It works!')
 
-    def test_500_error(self):
+    def test_500_error_retries(self):
         self.server.reset_errors_count()
 
         try:
-            self.client.rest_client.GET(self.base_url % '/error/500')
+            self.client.rest_client.GET(self.base_url % ('/error/%s' % range(500, 600)))
         except RetryError:
             self.assertEqual(self.client.config.http_max_retries + 1, self.server.errors_count)

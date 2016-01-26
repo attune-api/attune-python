@@ -49,7 +49,7 @@ class Server(object):
         def index(*args, **kwargs):
             return 'It works!'
 
-        @app.route('/error/<code>')
+        @app.route('/error/<code>', method=['GET', 'HEAD', 'DELETE', 'POST', 'PUT', 'PATCH', 'OPTIONS'])
         def error(code):
             self.errors_count += 1
 

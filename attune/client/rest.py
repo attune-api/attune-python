@@ -73,11 +73,14 @@ class RESTClientObject(object):
 
         self.pool_manager = requests.Session()
 
+        self.retry_methods = frozenset(['GET', 'HEAD', 'DELETE', 'OPTIONS'])
+
         # noinspection PyTypeChecker
         adapter = HTTPAdapter(
                 pool_connections=config.http_pool_size,
                 pool_maxsize=config.http_pool_size,
                 max_retries=Retry(
+                        method_whitelist=self.retry_methods,
                         total=config.http_max_retries,
                         connect=config.http_max_retries,
                         read=config.http_max_retries,

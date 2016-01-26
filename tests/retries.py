@@ -61,3 +61,20 @@ class TestRetries(unittest.TestCase):
             self.client.rest_client.GET(self.base_url % ('/error/%s' % code))
 
             self.assertEqual(self.server.errors_count, 1)
+
+    def test_methods_retries(self):
+        for method in ['GET', 'HEAD', 'DELETE', 'POST', 'PUT', 'PATCH', 'OPTIONS']:
+            self.server.reset_errors_count()
+
+            try:
+                self.client.rest_client.request(
+                        method, self.base_url % '/error/500',
+                        headers={
+                            'Content-Type': 'application/json'
+                        }
+                )
+            except RetryError:
+                self.assertEqual(self.client.config.http_max_retries + 1, self.server.errors_count)
+
+            except ApiException:
+                self.assertEqual(1, self.server.errors_count)

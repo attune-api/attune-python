@@ -1,4 +1,4 @@
-attune-client
+attune-python
 ==========
 
 Attune (http://attune.co/) api client for python.
@@ -39,7 +39,7 @@ Installation
 To install, simply:
 
 ```
-pip install attune-client
+pip install attune-python
 ```
 
 

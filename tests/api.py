@@ -243,26 +243,26 @@ class TestApi(unittest.TestCase):
         return self.client.get_rankings(rankingParams, oauth_token=self.oauth_token)
 
     def test_commands_fallback(self):
-        class Test(BaseCommand):
+        class TestFallback(BaseCommand):
             def run(self): raise RuntimeError
 
             def fallback(self): return 'It works!'
 
         self.client.update_fallback_to_default(False)
         with self.assertRaises(RuntimeError):
-            self.client.run(Test(self.client))
+            self.client.run(TestFallback(self.client))
 
         self.client.update_fallback_to_default(True)
 
         self.assertEqual(self.client.config.commands_fallback, True)
-        self.assertEqual('It works!', self.client.run(Test(self.client)))
+        self.assertEqual('It works!', self.client.run(TestFallback(self.client)))
 
         self.client.update_fallback_to_default(False)
         with self.assertRaises(RuntimeError):
-            self.client.run(Test(self.client))
+            self.client.run(TestFallback(self.client))
 
     def test_circuit_breaker(self):
-        class Test(BaseCommand):
+        class TestCircuitBreaker(BaseCommand):
             def run(self):
                 raise RuntimeError()
 
@@ -271,7 +271,7 @@ class TestApi(unittest.TestCase):
 
         self.client.update_fallback_to_default(False)
 
-        cmd = Test(self.client)
+        cmd = TestCircuitBreaker(self.client)
 
         for i in range(1, cmd.breaker.fail_max):
             with self.assertRaises(RuntimeError):

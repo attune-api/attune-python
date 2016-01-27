@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(
-        name='attune',
+        name='attune-client',
         version="1.0.0",
         description="Attune API Client",
         author_email="",

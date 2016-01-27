@@ -5,9 +5,9 @@ from setuptools import setup
 setup(
         name='attune-python',
         version="1.0.0",
-        description="Attune API Client",
-        author_email="",
-        url="",
+        description="Attune.co API Client",
+        author_email="python@attune.co",
+        url="https://github.com/attune-api/attune-python",
         keywords=["Attune API"],
         install_requires=[
             "requests",

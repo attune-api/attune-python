@@ -55,7 +55,7 @@ If you want run tests - don't forget to use source code cloned version.
 Hello world
 -----------
 
-Library supports one COnfiguration object cross all created clients (Singleton pattern), but you can pass 
+Library supports one Configuration object cross all created clients (Singleton pattern), but you can pass 
 your custom settings project to init function of client object.
 
 ```python

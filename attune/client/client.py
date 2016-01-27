@@ -30,6 +30,7 @@ import threading
 from datetime import date
 from datetime import datetime
 
+import attune.client.commands as commands
 from attune.client.model import Customer
 from .rest import ApiException
 from .rest import RESTClientObject
@@ -543,79 +544,33 @@ class Client(BaseClient):
 
         self.api = Entities(self)
 
+    def update_fallback_to_default(self, boolean):
+        self.config.commands_fallback = bool(boolean)
+
+    def run(self, command, callback=None):
+        return command.execute(callback=callback)
+
     def get_auth_token(self, client_id, client_secret, callback=None):
-        """
-        Returns auth token for given client_id and client_secret
-        :param callback function: The callback function
-            for asynchronous request. (optional)
-        :return: BatchRankingResult
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        if client_id is None:
-            raise ValueError("Missing the required parameter `client_id` when calling `get_auth_token`")
-
-        if client_secret is None:
-            raise ValueError("Missing the required parameter `client_secret` when calling `get_auth_token`")
-
-        resource_path = '/oauth/token'
-
-        form_params = {
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'grant_type': 'client_credentials'
-        }
-
-        header_params = {
-            'Content-Type': self.select_header_content_type(['application/x-www-form-urlencoded'])
-        }
-
-        response = self.call_api(resource_path, 'POST',
-                                 post_params=form_params,
-                                 response_type='object',
-                                 header_params=header_params,
-                                 callback=callback)
-        return response
+        return self.run(commands.GetAuthToken(self, args=(client_id, client_secret)), callback)
 
     def create_anonymous(self, oauth_token=None, callback=None):
-        return self.api.create(oauth_token=oauth_token, callback=callback)
+        return self.run(commands.CreateAnonymous(self, oauth_token=oauth_token), callback)
 
     def bind(self, anonymous_id, customer_id, oauth_token=None, callback=None):
         customer = Customer()
         customer.customer = customer_id
 
-        return self.api.update(anonymous_id, customer, oauth_token=oauth_token, callback=callback)
+        return self.run(commands.Bind(self, args=(anonymous_id, customer), oauth_token=oauth_token), callback)
 
     def get_bound_customer(self, anonymous_id, oauth_token=None, callback=None):
-        return self.api.get(anonymous_id, oauth_token=oauth_token, callback=callback)
+        return self.run(commands.BoundCustomer(self, args=(anonymous_id,), oauth_token=oauth_token), callback)
 
     def get_rankings(self, ranking_params, oauth_token=None, callback=None):
         ranking_params.entity_source = ranking_params.entity_source or 'ids'
 
         if ranking_params.entity_source.upper() == 'IDS':
-            return self.api.get_rankings(ranking_params, oauth_token=oauth_token, callback=callback)
+            command = commands.GetRankingsPOST(self, args=(ranking_params,), oauth_token=oauth_token)
         else:
-            return self._get_rankings_get(ranking_params, oauth_token=oauth_token, callback=callback)
+            command = commands.GetRankingsGET(self, args=(ranking_params,), oauth_token=oauth_token)
 
-    def _get_rankings_get(self, params, **kwargs):
-        if params is None:
-            raise ValueError(
-                    "Missing the required parameter `params` when calling `get_rankings`")
-
-        resource_path = '/entities/ranking'.replace('{format}', 'json')
-
-        if params.entity_source.upper() == 'SCOPE':
-            params.scope = list('%s=%s' % (x.name, x.value) for x in params.scope or [])
-
-            params.ids = None
-
-        header_params = {
-            'Content-Type': self.select_header_content_type([])
-        }
-
-        return self.call_api(resource_path, 'GET',
-                             query_params=params,
-                             header_params=header_params,
-                             response_type='RankedEntities',
-                             callback=kwargs.get('callback'),
-                             oauth_token=kwargs.get('oauth_token'))
+        return self.run(command, callback)

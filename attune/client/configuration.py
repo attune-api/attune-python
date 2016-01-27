@@ -44,6 +44,10 @@ def singleton(cls, *args, **kw):
 
 class Settings(object):
     def __init__(self):
+        self.__logger_file = None
+        self.__debug = False
+        self.__logger_format = None
+
         # Default Base url
         self.host = "https://api-west1.attune.co"
         # Default api client
@@ -56,9 +60,11 @@ class Settings(object):
         self.access_token = ""
 
         # Logging Settings
-        self.logger = {}
-        self.logger["package_logger"] = logging.getLogger("swagger_client")
-        self.logger["urllib3_logger"] = logging.getLogger("requests.packages.urllib3")
+        self.logger = {
+            "package_logger": logging.getLogger("swagger_client"),
+            "urllib3_logger": logging.getLogger("requests.packages.urllib3"),
+            "attune_logger": logging.getLogger("attune"),
+        }
         # Log format
         self.logger_format = '%(asctime)s %(levelname)s %(message)s'
         # Log stream handler
@@ -80,6 +86,29 @@ class Settings(object):
         self.http_max_retries = 3
         self.http_timeout_read = 5
         self.http_timeout_connect = 5
+
+        self.commands_fallback = False
+
+        # Thread pool executor workers
+        self.threadpool_workers_default = 5
+        self.threadpool_workers = {
+            'getauthtoken': 3,
+            'bind': 3,
+            'createanonymous': 5,
+            'boundcustomer': 5,
+            'getrankingsget': 10,
+            'getrankingspost': 10
+        }
+
+        self.circuit_breaker_default = (5, 60)
+        self.circuit_breaker = {
+            'getauthtoken': (5, 15),
+            'bind': (5, 15),
+            'createanonymous': (5, 15),
+            'boundcustomer': (5, 15),
+            'getrankingsget': (5, 30),
+            'getrankingspost': (5, 30)
+        }
 
     @property
     def logger_file(self):
@@ -146,6 +175,8 @@ class Settings(object):
             # setting log level to default `logging.WARNING`
             for _, logger in iteritems(self.logger):
                 logger.setLevel(logging.ERROR)
+
+            # self.logger['hystrix_logger'].setLevel(logging.CRITICAL)
             # turn off httplib debug
             httplib.HTTPConnection.debuglevel = 0
 
@@ -168,6 +199,7 @@ class Settings(object):
         """
         self.__logger_format = value
         self.logger_formatter = logging.Formatter(self.__logger_format)
+
 
 @singleton
 def Configuration():

@@ -29,11 +29,7 @@ import sys
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3 import Retry
-
-try:
-    import urllib3
-except ImportError:
-    raise ImportError('Swagger python client requires urllib3.')
+from requests.packages.urllib3.exceptions import SSLError
 
 try:
     # for python3
@@ -152,7 +148,7 @@ class RESTClientObject(object):
                                               params=query_params,
                                               headers=headers,
                                               timeout=self.timeouts)
-        except urllib3.exceptions.SSLError as e:
+        except SSLError as e:
             msg = "{0}\n{1}".format(type(e).__name__, str(e))
             raise ApiException(status=0, reason=msg)
 

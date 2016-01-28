@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='attune-python',
-        version="1.0.2",
+        version="1.0.3",
         description="Attune.co API Client",
         author_email="python@attune.co",
         author='Attune.co',
@@ -15,6 +15,7 @@ setup(
             "six >= 1.9",
             "certifi",
             "python-dateutil",
+            "futures",
             "pybreaker"
         ],
         packages=find_packages(),

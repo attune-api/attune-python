@@ -6,11 +6,16 @@ from pybreaker import CircuitBreaker
 
 from attune.client.model import RankedEntities
 
-_lock = threading.Lock()
+_lock = threading.RLock()
 _executors = {}
 _breakers = {}
 
 log = logging.getLogger(__name__)
+
+
+class NonBlockingBreaker(CircuitBreaker):
+    def call(self, func, *args, **kwargs):
+        return self._state.call(func, *args, **kwargs)
 
 
 class BaseCommand(object):
@@ -28,8 +33,7 @@ class BaseCommand(object):
             self.kwargs['oauth_token'] = oauth_token
 
     def get_executor(self):
-        _lock.acquire()
-        try:
+        with _lock:
             key = self.__class__.__name__.lower()
 
             if not key in _executors:
@@ -38,23 +42,18 @@ class BaseCommand(object):
                 _executors[key] = ThreadPoolExecutor(workers)
 
             return _executors[key]
-        finally:
-            _lock.release()
 
     def get_breaker(self):
-        _lock.acquire()
-        try:
+        with _lock:
             key = self.__class__.__name__.lower()
 
             if not key in _breakers:
                 settings = self.client.config.circuit_breaker.get(key, self.client.config.circuit_breaker_default)
 
                 # we add +1 to leave settings clean because they uses "< fail_max"
-                _breakers[key] = CircuitBreaker(fail_max=settings[0] + 1, reset_timeout=settings[1])
+                _breakers[key] = NonBlockingBreaker(fail_max=settings[0] + 1, reset_timeout=settings[1])
 
             return _breakers[key]
-        finally:
-            _lock.release()
 
     def command(self):
         raise NotImplementedError

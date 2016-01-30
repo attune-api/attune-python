@@ -81,8 +81,8 @@ class Settings(object):
         self.verify_ssl = True
 
         # HTTP Pool settings
-        self.http_pool_connections = 100
-        self.http_pool_size = 100
+        self.http_pool_connections = 200
+        self.http_pool_size = 200
         self.http_max_retries = 3
         self.http_timeout_read = 5
         self.http_timeout_connect = 5
@@ -90,14 +90,14 @@ class Settings(object):
         self.commands_fallback = False
 
         # Thread pool executor workers
-        self.threadpool_workers_default = 5
+        self.threadpool_workers_default = 50
         self.threadpool_workers = {
-            'getauthtoken': 3,
-            'bind': 3,
-            'createanonymous': 5,
-            'boundcustomer': 5,
-            'getrankingsget': 10,
-            'getrankingspost': 10
+            'getauthtoken': 100,
+            'bind': 100,
+            'createanonymous': 200,
+            'boundcustomer': 200,
+            'getrankingsget': 200,
+            'getrankingspost': 200
         }
 
         self.circuit_breaker_default = (5, 60)

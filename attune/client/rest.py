@@ -73,7 +73,7 @@ class RESTClientObject(object):
 
         # noinspection PyTypeChecker
         adapter = HTTPAdapter(
-                pool_connections=config.http_pool_size,
+                pool_connections=config.http_pool_connections,
                 pool_maxsize=config.http_pool_size,
                 max_retries=Retry(
                         method_whitelist=self.retry_methods,
@@ -82,7 +82,7 @@ class RESTClientObject(object):
                         read=config.http_max_retries,
                         status_forcelist=range(500, 600)
                 ),
-                pool_block=True,
+                pool_block=True
         )
         self.pool_manager.mount('https://', adapter)
         self.pool_manager.mount('http://', adapter)

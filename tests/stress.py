@@ -3,7 +3,6 @@ import logging
 import os
 import sys
 from datetime import datetime, timedelta
-from pprint import pprint
 from random import random, randint, choice
 from threading import Thread, Lock
 from time import sleep, time
@@ -40,6 +39,12 @@ class Test:
         configuration = Settings()
         configuration.host = cfg['serverUrl']
         configuration.debug = True
+
+        configuration.http_pool_connections = 1000
+        configuration.http_pool_size = 1000
+
+        for k in configuration.threadpool_workers.keys():
+            configuration.threadpool_workers[k] = 1000
 
         client = Client(configuration)
 

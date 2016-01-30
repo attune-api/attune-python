@@ -2,13 +2,14 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from random import random, randint, choice
 from threading import Thread, Lock
 from time import sleep, time
 
 import click
 import coloredlogs as coloredlogs
+from profilestats import profile
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -62,12 +63,8 @@ class Test:
 
             threads.append(thread)
 
-        end_time = datetime.now() + timedelta(seconds=cfg['duration'] + 2)
-        while (datetime.now() < end_time):
-            sleep(1)
-
-        # for th in threads:
-        #     th.join(0.001)
+        for th in threads:
+            th.join()
 
         log.info('The test took %s' % (datetime.now() - start))
 
@@ -75,8 +72,8 @@ class Test:
         for k, v in self.stats.items():
             log.info('    - %s: %s' % (k, v))
 
-        # Force exit. Faster then join all threads.
-        os._exit(0)
+        if 'callTime' in self.stats and 'successfulCalls' in self.stats:
+            log.info('    - Average time for request: %s' % (self.stats['callTime'] / self.stats['successfulCalls']))
 
     def call_rank(self, client, cfg, aid, customer, entity):
         view, ids = json.loads(entity).popitem()
@@ -123,7 +120,7 @@ class Test:
                 if random() > alpha:
                     break
 
-                    # log.debug('Exiting thread #%s' % thread_id)
+        log.debug('Exiting thread #%s' % thread_id)
 
     def open_file(self, filename):
         path = os.path.join(os.path.dirname(__file__), 'data', filename)
@@ -141,9 +138,10 @@ class Test:
 
 
 @click.command()
+@click.option('--profiling', '-P', help='Enable source code profiling', is_flag=True)
 @click.option('-v', '--verbose', help='Logging level. Can be used multiple times', count=True,
               type=click.IntRange(max=2, clamp=True))
-def stress(verbose):
+def stress(profiling, verbose):
     loglevel = {
         0: logging.INFO,
         1: logging.DEBUG
@@ -153,7 +151,10 @@ def stress(verbose):
                         fmt='%(asctime)s.%(msecs)03d %(name)s[%(process)d] %(levelname)s %(message)s')
 
     test = Test()
-    test.run()
+    if profiling:
+        profile(print_stats=10, dump_stats=True)(test.run)()
+    else:
+        test.run()
 
 
 if __name__ == '__main__':

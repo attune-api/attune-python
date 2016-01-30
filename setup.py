@@ -20,5 +20,5 @@ setup(
         ],
         packages=find_packages(),
         test_suite='tests',
-        tests_require=['coverage', 'click', 'inflection', 'autopep8', 'bottle', 'coloredlogs']
+        tests_require=['coverage', 'click', 'inflection', 'autopep8', 'bottle', 'coloredlogs', 'profilestats']
 )

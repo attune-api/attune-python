@@ -75,6 +75,10 @@ class Test:
         if 'callTime' in self.stats and 'successfulCalls' in self.stats:
             log.info('    - Average time for request: %s' % (self.stats['callTime'] / self.stats['successfulCalls']))
 
+        if 'successfulCalls' in self.stats:
+            rps = self.stats['successfulCalls'] / (datetime.now() - start).total_seconds()
+            log.info('    - Requests per second to attune.co %3.2f' % rps)
+
     def call_rank(self, client, cfg, aid, customer, entity):
         view, ids = json.loads(entity).popitem()
 

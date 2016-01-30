@@ -139,9 +139,10 @@ class Test:
 
 @click.command()
 @click.option('--profiling', '-P', help='Enable source code profiling', is_flag=True)
+@click.option('--profiling-dump', '-D', help='Dump stats to files when profiling', is_flag=True)
 @click.option('-v', '--verbose', help='Logging level. Can be used multiple times', count=True,
               type=click.IntRange(max=2, clamp=True))
-def stress(profiling, verbose):
+def stress(profiling, profiling_dump, verbose):
     loglevel = {
         0: logging.INFO,
         1: logging.DEBUG
@@ -152,7 +153,7 @@ def stress(profiling, verbose):
 
     test = Test()
     if profiling:
-        profile(print_stats=10, dump_stats=True)(test.run)()
+        profile(print_stats=25, dump_stats=profiling_dump)(test.run)()
     else:
         test.run()
 

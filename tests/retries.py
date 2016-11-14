@@ -1,6 +1,6 @@
 import unittest
 
-from requests.packages.urllib3.exceptions import MaxRetryError
+from requests.exceptions import RetryError
 
 from attune.client.client import Client
 from attune.client.rest import ApiException
@@ -29,13 +29,11 @@ class TestRetries(unittest.TestCase):
         self.assertEqual(result.data, 'It works!')
 
     def test_500_errors_pass_with_retries(self):
-        """ Requests 1.2.0 doesn't support Retry for 500 errors """
-        return
         self.server.reset_errors_count()
 
         try:
             self.client.rest_client.GET(self.base_url % ('/error/%s' % range(500, 600)))
-        except MaxRetryError:
+        except RetryError:
             self.assertEqual(self.client.config.http_max_retries + 1, self.server.errors_count)
 
     def test_400_errors_pass_without_retries(self):
@@ -65,8 +63,6 @@ class TestRetries(unittest.TestCase):
             self.assertEqual(self.server.errors_count, 1)
 
     def test_methods_retries(self):
-        """ is not supported in requests 1.2.0"""
-        return
         for method in ['GET', 'HEAD', 'DELETE', 'POST', 'PUT', 'PATCH', 'OPTIONS']:
             self.server.reset_errors_count()
 

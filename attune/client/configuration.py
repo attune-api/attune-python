@@ -84,8 +84,8 @@ class Settings(object):
         self.http_pool_connections = 200
         self.http_pool_size = 200
         self.http_max_retries = 3
-        self.http_timeout_read = 5.
-        self.http_timeout_connect = 5.
+        self.http_timeout_read = 5
+        self.http_timeout_connect = 5
 
         self.commands_fallback = False
 

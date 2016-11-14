@@ -28,7 +28,7 @@ import sys
 # python 2 and python 3 compatibility library
 import requests
 from requests.adapters import HTTPAdapter
-# from requests.packages.urllib3 import Retry
+from requests.packages.urllib3 import Retry
 from requests.packages.urllib3.exceptions import SSLError
 
 try:
@@ -75,16 +75,15 @@ class RESTClientObject(object):
         adapter = HTTPAdapter(
                 pool_connections=config.http_pool_connections,
                 pool_maxsize=config.http_pool_size,
-                # max_retries=Retry(
-                #         method_whitelist=self.retry_methods,
-                #         total=config.http_max_retries,
-                #         connect=config.http_max_retries,
-                #         read=config.http_max_retries,
-                #         status_forcelist=range(500, 600)
-                # ),
-                # pool_block=True
+                max_retries=Retry(
+                        method_whitelist=self.retry_methods,
+                        total=config.http_max_retries,
+                        connect=config.http_max_retries,
+                        read=config.http_max_retries,
+                        status_forcelist=range(500, 600)
+                ),
+                pool_block=True
         )
-        adapter.max_retries = config.http_max_retries
         self.pool_manager.mount('https://', adapter)
         self.pool_manager.mount('http://', adapter)
 
@@ -92,8 +91,7 @@ class RESTClientObject(object):
 
     @property
     def timeouts(self):
-        return float(self.config.http_timeout_read)
-        # return (float(self.config.http_timeout_connect), float(self.config.http_timeout_read))
+        return (float(self.config.http_timeout_connect), float(self.config.http_timeout_read))
 
     def request(self, method, url, query_params=None, headers=None,
                 body=None, post_params=None):

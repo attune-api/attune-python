@@ -1,6 +1,6 @@
 import unittest
 
-from requests.exceptions import ConnectTimeout, ConnectionError
+from requests.exceptions import Timeout, ConnectionError
 
 
 class TestApi(unittest.TestCase):
@@ -10,7 +10,8 @@ class TestApi(unittest.TestCase):
         from attune.client.configuration import Configuration
 
         cls.config = Configuration()
-        cls.config.host = 'https://api-test.attune.co/'
+        # cls.config.host = 'https://api-test.attune.co/'
+        cls.config.host = 'https://api.attune-staging.co/'
 
         cls.client = Client(cls.config)
 
@@ -23,13 +24,16 @@ class TestApi(unittest.TestCase):
         self.client.rest_client.pool_manager.close()
 
     def test_connect_timeout(self):
-        old = self.config.http_timeout_connect
+        """ is not supported, only global timeout is supported in requests 1.2.0"""
 
-        self.config.http_timeout_connect = 0.001
-        with self.assertRaises(ConnectTimeout):
+        return
+        old = self.config.http_timeout_read
+
+        self.config.http_timeout_read = 0.001
+        with self.assertRaises(Timeout):
             self.client.get_auth_token(*self.auth_token_args)
 
-        self.config.http_timeout_connect = old
+        self.config.http_timeout_read = old
 
         self.pool_close()
 
@@ -37,7 +41,7 @@ class TestApi(unittest.TestCase):
         old = self.config.http_timeout_read
 
         self.config.http_timeout_read = 0.0001
-        with self.assertRaises(ConnectionError):
+        with self.assertRaises(Timeout):
             self.client.get_auth_token(*self.auth_token_args)
 
         self.config.http_timeout_read = old

@@ -19,9 +19,10 @@ class TestApi(unittest.TestCase):
 
         cls.config = Configuration()
         cls.config.debug = False
-        cls.config.host = 'https://api-test.attune.co/'
+        # cls.config.host = 'https://api-test.attune.co/'
+        cls.config.host = 'https://api.attune-staging.co/'
 
-        cls.oauth_token = "a12a4e7a-b359-4c4f-aced-582673f2a6d9"
+        cls.oauth_token = "8d94a7a6-f42d-4bdc-8d27-6929e8418c0e"
 
         cls.client = Client(cls.config)
 

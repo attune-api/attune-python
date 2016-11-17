@@ -19,7 +19,7 @@ class NonBlockingBreaker(CircuitBreaker):
 
 
 class BaseCommand(object):
-    def __init__(self, client, args=None, kwargs=None, timeout=None, oauth_token=None):
+    def __init__(self, client, offset=-1, count=-1, args=None, kwargs=None, timeout=None, oauth_token=None):
         self.timeout = timeout
 
         self.client = client
@@ -29,6 +29,10 @@ class BaseCommand(object):
 
         self.executor = self.get_executor()
         self.breaker = self.get_breaker()
+        if count>-1:
+            self.kwargs['count'] = count
+        if offset > -1:
+            self.kwargs['offset'] = offset
         if oauth_token:
             self.kwargs['oauth_token'] = oauth_token
 

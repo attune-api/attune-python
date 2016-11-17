@@ -576,11 +576,11 @@ class Client(BaseClient):
     def get_bound_customer(self, anonymous_id, oauth_token=None, callback=None):
         return self.run(commands.BoundCustomer(self, args=(anonymous_id,), oauth_token=oauth_token), callback)
 
-    def get_rankings(self, ranking_params, oauth_token=None, callback=None):
+    def get_rankings(self, ranking_params, oauth_token=None, callback=None, offset=None, count=None):
         ranking_params.entity_source = ranking_params.entity_source or 'ids'
 
         if ranking_params.entity_source.upper() == 'IDS':
-            command = commands.GetRankingsPOST(self, args=(ranking_params,), oauth_token=oauth_token)
+            command = commands.GetRankingsPOST(self, args=(ranking_params,), offset=offset, count=count, oauth_token=oauth_token)
         else:
             command = commands.GetRankingsGET(self, args=(ranking_params,), oauth_token=oauth_token)
 

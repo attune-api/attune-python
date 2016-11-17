@@ -315,6 +315,13 @@ class Entities(object):
             raise ValueError(
                 "Missing the required parameter `params` when calling `get_rankings`")
 
+        query_params = {}
+        qps = ['count', 'offset']
+        for qp in qps:
+            val = kwargs.pop(qp, None)
+            if val>-1:
+                query_params[qp] = val
+
         all_params = ['params']
         all_params.append('callback')
         all_params.append('oauth_token')
@@ -333,8 +340,6 @@ class Entities(object):
         method = 'POST'
 
         path_params = {}
-
-        query_params = {}
 
         header_params = {}
 

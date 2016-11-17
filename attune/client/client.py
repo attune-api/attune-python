@@ -222,7 +222,7 @@ class BaseClient(object):
            r.status = data.get('status', None);
            r.message = data.get('message', None);
         else:
-           r = __deserialize(self, data, klass)
+           r = __deserialize(data, klass)
         return r
 
     def __deserialize(self, data, klass):

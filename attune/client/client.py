@@ -212,7 +212,18 @@ class BaseClient(object):
         except ValueError:
             data = response.data
 
-        return self.__deserialize(data, response_type)
+        return self.__manual_deserialize(data, response_type)
+
+    def __manual_deserialize(self, data, klass):
+        if "RankedEntities" == klass:
+           r = model.RankedEntities()
+           r.cell = data.get('cell', None);
+           r.ranking = data.get('ranking', None);
+           r.status = data.get('status', None);
+           r.message = data.get('message', None);
+        else:
+           r = __deserialize(data, klass)
+        return r
 
     def __deserialize(self, data, klass):
         """

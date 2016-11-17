@@ -11,10 +11,10 @@ setup(
         url="https://github.com/attune-api/attune-python",
         keywords=["Attune API"],
         install_requires=[
-            "requests == 1.2.0",
-            "six == 1.4.1",
+            "requests",
+            "six >= 1.9",
             "certifi",
-            "python-dateutil <= 2.3",
+            "python-dateutil",
             "futures",
             "pybreaker"
         ],

@@ -21,9 +21,12 @@ https://www.dropbox.com/developers/core/sdks/python
 from __future__ import absolute_import
 
 import io
-import json
 import logging
 import sys
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 # python 2 and python 3 compatibility library
 import requests

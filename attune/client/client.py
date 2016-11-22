@@ -20,7 +20,10 @@ Copyright 2015 SmartBear Software
 
 from __future__ import absolute_import
 
-import json
+try:
+    import ujson as json
+except ImportError:
+    import json
 import mimetypes
 import os
 import re
@@ -61,7 +64,7 @@ class BaseClient(object):
 
         self.default_headers = {}
 
-        self.user_agent = 'attune-python/1.0.5'
+        self.user_agent = 'attune-python/1.0.6'
 
     @property
     def user_agent(self):

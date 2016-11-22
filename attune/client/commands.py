@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pybreaker import CircuitBreaker
 
 from attune.client.model import RankedEntities
+from attune.client import rest
 
 _lock = threading.RLock()
 _executors = {}
@@ -62,7 +63,7 @@ class BaseCommand(object):
     def command(self):
         raise NotImplementedError
 
-    def fallback(self):
+    def fallback(self, e):
         raise NotImplementedError
 
     def run(self):
@@ -81,7 +82,7 @@ class BaseCommand(object):
             try:
                 log.info('trying fallback for {}'.format(self))
 
-                return self.fallback()
+                return self.fallback(error)
             except Exception, e:
                 if not isinstance(e, NotImplementedError): error = e
 
@@ -182,8 +183,11 @@ class GetRankingsPOST(BaseCommand):
     def command(self):
         return self.client.api.get_rankings
 
-    def fallback(self):
+    def fallback(self, e):
         entities = RankedEntities()
         entities.ranking = self.args[0].ids
+        entities.message = str(e)
+        if isinstance(e, rest.ApiException):
+            entities.status = e.status
 
         return entities

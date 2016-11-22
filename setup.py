@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='attune-python',
-        version="1.0.4",
+        version="1.0.5",
         description="Attune.co API Client",
         author_email="python@attune.co",
         author='Attune.co',

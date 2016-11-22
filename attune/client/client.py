@@ -61,7 +61,7 @@ class BaseClient(object):
 
         self.default_headers = {}
 
-        self.user_agent = 'attune-python/1.0.4'
+        self.user_agent = 'attune-python/1.0.5'
 
     @property
     def user_agent(self):
